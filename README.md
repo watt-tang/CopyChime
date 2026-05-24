@@ -1,6 +1,19 @@
 # CopyChime
 
-> A tiny clipboard HUD for Windows. Copy, preview, and quickly reuse recent text snippets.
+<p align="center">
+  <img src="assets/pic_head.png" alt="CopyChime" width="480" />
+</p>
+
+<p align="center">
+  <strong>A tiny clipboard HUD for Windows</strong><br/>
+  Copy, preview, and quickly reuse recent text snippets.
+</p>
+
+<p align="center">
+  <a href="README.zh-CN.md">中文文档</a>
+</p>
+
+---
 
 ## What it is
 
@@ -43,6 +56,20 @@ No installation required. Double-click to run.
 - **Search** — Filter history and favorites
 - **App Exclusion Rules** — Skip clipboard capture from password managers and other apps
 - **Paste as Plain Text** — Strip zero-width chars and normalize text
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Runtime | Electron 33 |
+| UI | React 18 + TypeScript 5.6 |
+| Bundler | Vite 6 |
+| Packaging | electron-builder |
+| CI/CD | GitHub Actions |
+| Sound | Web Audio API (synthesized, no external files) |
+| Theming | CSS Variables + `data-theme` attribute |
+| Security | contextBridge + contextIsolation (nodeIntegration disabled) |
+| Storage | JSON file in `app.getPath("userData")` |
 
 ## Privacy
 
