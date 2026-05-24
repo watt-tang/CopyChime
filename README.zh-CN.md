@@ -133,6 +133,8 @@ GitHub Actions 会自动构建 Windows 便携版 exe 并上传到 GitHub Release
 | Ctrl+Alt+M | 切换隐私模式 |
 | Ctrl+Alt+V | 快速粘贴面板 |
 
-## 截图
+## 演示
 
-TODO: 添加 GIF
+<p align="center">
+  <img src="assets/demo.gif" alt="CopyChime 演示" width="480" />
+</p>

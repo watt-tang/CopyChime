@@ -135,4 +135,6 @@ GitHub Actions will automatically build the Windows portable exe and upload it t
 
 ## Demo
 
-TODO: Add GIF
+<p align="center">
+  <img src="assets/demo.gif" alt="CopyChime Demo" width="480" />
+</p>
