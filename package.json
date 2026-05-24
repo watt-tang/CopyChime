@@ -2,12 +2,41 @@
   "name": "copychime",
   "version": "0.1.0",
   "description": "A tiny clipboard HUD for Windows",
+  "author": "watt-tang",
+  "license": "MIT",
   "main": "dist/main/main/index.js",
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && vite build",
     "typecheck": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.preload.json && tsc --noEmit -p tsconfig.renderer.json",
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.copychime.app",
+    "productName": "CopyChime",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "CopyChime-${version}-win-portable.${ext}"
+    },
+    "portable": {
+      "artifactName": "CopyChime-${version}-win-portable.${ext}"
+    },
+    "npmRebuild": false
   },
   "dependencies": {},
   "devDependencies": {
@@ -15,6 +44,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
     "electron": "^33.0.0",
+    "electron-builder": "^26.0.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "typescript": "^5.6.0",

@@ -17,6 +17,14 @@ CopyChime is **not** a full clipboard manager like Ditto, CopyQ, or EcoPaste. It
 - No network requests
 - No analytics or telemetry
 
+## Download
+
+Go to [GitHub Releases](https://github.com/watt-tang/CopyChime/releases) and download:
+
+**CopyChime-0.1.0-win-portable.exe**
+
+No installation required. Double-click to run.
+
 ## Features
 
 - **Copy notification** — Shows a bubble with text preview, character count, and line count
@@ -25,10 +33,16 @@ CopyChime is **not** a full clipboard manager like Ditto, CopyQ, or EcoPaste. It
 - **Privacy mode** — Hide clipboard content from the UI
 - **Sensitive content detection** — Automatically masks API keys, tokens, passwords
 - **Ignore patterns** — Skip clipboard content matching custom rules
-- **Theme support** — Light, Dark, Catppuccin, Mint, Mono, System
+- **Theme support** — Light, Dark, Catppuccin, Mint, Mono, Pixel Lavender, System
 - **System tray** — Minimize to tray, pause/resume, quick access
-- **Global shortcuts** — Ctrl+Alt+C/H/P/M for quick control
+- **Global shortcuts** — Ctrl+Alt+C/H/P/M/V for quick control
 - **Window position memory** — Remembers where you placed the HUD
+- **Pixel mascot UI** — Cute pixel art mascot with sound feedback
+- **Quick Paste Palette** — Ctrl+Alt+V to search and paste recent/favorite snippets
+- **Favorites** — Save frequently used text snippets
+- **Search** — Filter history and favorites
+- **App Exclusion Rules** — Skip clipboard capture from password managers and other apps
+- **Paste as Plain Text** — Strip zero-width chars and normalize text
 
 ## Privacy
 
@@ -38,6 +52,12 @@ CopyChime stores all data locally in your user data directory. It:
 - Does **not** make any network requests
 - Does **not** use analytics or telemetry
 - Does **not** sync to cloud services
+
+Sound feedback is generated locally using the Web Audio API. No audio files are loaded from the network.
+
+## Windows SmartScreen Note
+
+Current builds are **not code-signed**. Windows may show a SmartScreen warning when you first run the exe. This is normal for unsigned open-source software. Only download from the official [GitHub Releases](https://github.com/watt-tang/CopyChime/releases) page.
 
 ## Development
 
@@ -49,14 +69,32 @@ npm run dev
 ## Build
 
 ```bash
+npm install
+npm run typecheck
 npm run build
 ```
 
-## Type Check
+## Package Windows Portable Exe
 
 ```bash
-npm run typecheck
+npm install
+npm run dist:win
 ```
+
+Output: `release/CopyChime-0.1.0-win-portable.exe`
+
+## Release
+
+To publish a new release:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+GitHub Actions will automatically build the Windows portable exe and upload it to a GitHub Release.
+
+**Note:** Ensure your repo Settings → Actions → General → Workflow permissions is set to **Read and write permissions**.
 
 ## Global Shortcuts
 
@@ -66,12 +104,7 @@ npm run typecheck
 | Ctrl+Alt+H | Open history panel |
 | Ctrl+Alt+P | Pause/Resume clipboard watching |
 | Ctrl+Alt+M | Toggle privacy mode |
-
-## Roadmap
-
-- Packaging / installer
-- Optional custom shortcuts
-- Portable mode
+| Ctrl+Alt+V | Quick Paste Palette |
 
 ## Demo
 
