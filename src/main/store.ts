@@ -5,7 +5,7 @@ import { AppSettings, HistoryRecord } from "../shared/types";
 import { DEFAULT_SETTINGS, STORE_FILE_NAME } from "../shared/constants";
 
 interface PersistedStore {
-  version: 1;
+  version: number;
   settings: AppSettings;
   history: HistoryRecord[];
 }
@@ -21,7 +21,19 @@ function getStorePath(): string {
 }
 
 function defaults(): PersistedStore {
-  return { version: 1, settings: { ...DEFAULT_SETTINGS }, history: [] };
+  return { version: 2, settings: { ...DEFAULT_SETTINGS }, history: [] };
+}
+
+function migrateStore(store: PersistedStore): PersistedStore {
+  if (store.version < 2) {
+    // v1 -> v2: autoHideDelayMs default changed from 2000 to 4000
+    // Only migrate if the value is exactly the old default (user hasn't customized it)
+    if (store.settings.autoHideDelayMs === 2000) {
+      store.settings.autoHideDelayMs = 4000;
+    }
+    store.version = 2;
+  }
+  return store;
 }
 
 export function loadStore(): PersistedStore {
@@ -31,8 +43,9 @@ export function loadStore(): PersistedStore {
     if (fs.existsSync(p)) {
       const raw = fs.readFileSync(p, "utf-8");
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.version === 1) {
-        const store: PersistedStore = { ...defaults(), ...parsed, settings: { ...DEFAULT_SETTINGS, ...parsed.settings } };
+      if (parsed && (parsed.version === 1 || parsed.version === 2)) {
+        let store: PersistedStore = { ...defaults(), ...parsed, settings: { ...DEFAULT_SETTINGS, ...parsed.settings } };
+        store = migrateStore(store);
         cached = store;
         return store;
       }

@@ -184,12 +184,19 @@ body {
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
-  -webkit-app-region: drag;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none;
+  user-select: none;
   transition: background 0.15s;
+  outline: none;
 }
 
 .bubble:hover {
   background: var(--item-hover);
+}
+
+.bubble:focus-visible {
+  border-color: var(--accent);
 }
 
 .bubble-row {

@@ -15,6 +15,20 @@ export function useCopyChime() {
     settingsRef.current = settings;
   }, [settings]);
 
+  const clearAutoHideTimer = useCallback(() => {
+    if (autoHideTimer.current) {
+      clearTimeout(autoHideTimer.current);
+      autoHideTimer.current = null;
+    }
+  }, []);
+
+  const scheduleAutoHide = useCallback(() => {
+    clearAutoHideTimer();
+    autoHideTimer.current = setTimeout(() => {
+      window.copyChime.hideWindow();
+    }, settingsRef.current.autoHideDelayMs);
+  }, [clearAutoHideTimer]);
+
   useEffect(() => {
     window.copyChime.getState().then((state: AppState) => {
       setSettings(state.settings);
@@ -30,7 +44,8 @@ export function useCopyChime() {
         setCurrentView("bubble");
         window.copyChime.setWindowMode("bubble");
         playCopySound(settingsRef.current);
-        resetAutoHide();
+        clearAutoHideTimer();
+        scheduleAutoHide();
       }),
       window.copyChime.onHistoryUpdated((h) => setHistory(h)),
       window.copyChime.onSettingsUpdated((s) => setSettings(s)),
@@ -40,35 +55,31 @@ export function useCopyChime() {
     return () => {
       unsubs.forEach((u) => u());
       document.removeEventListener("click", handleClick);
+      clearAutoHideTimer();
     };
-  }, []);
-
-  const resetAutoHide = useCallback(() => {
-    if (autoHideTimer.current) clearTimeout(autoHideTimer.current);
-    autoHideTimer.current = setTimeout(() => {
-      window.copyChime.hideWindow();
-    }, settingsRef.current.autoHideDelayMs);
-  }, []);
+  }, [clearAutoHideTimer, scheduleAutoHide]);
 
   const expandToHistory = useCallback(() => {
-    if (autoHideTimer.current) clearTimeout(autoHideTimer.current);
+    clearAutoHideTimer();
     setCurrentView("history");
     window.copyChime.setWindowMode("panel");
     window.copyChime.setView("history");
-  }, []);
+  }, [clearAutoHideTimer]);
 
   const expandToSettings = useCallback(() => {
-    if (autoHideTimer.current) clearTimeout(autoHideTimer.current);
+    clearAutoHideTimer();
     setCurrentView("settings");
     window.copyChime.setWindowMode("panel");
     window.copyChime.setView("settings");
-  }, []);
+  }, [clearAutoHideTimer]);
 
   const backToBubble = useCallback(() => {
     setCurrentView("bubble");
     window.copyChime.setWindowMode("bubble");
     window.copyChime.setView("bubble");
-  }, []);
+    clearAutoHideTimer();
+    scheduleAutoHide();
+  }, [clearAutoHideTimer, scheduleAutoHide]);
 
   return {
     settings,
@@ -78,6 +89,6 @@ export function useCopyChime() {
     expandToHistory,
     expandToSettings,
     backToBubble,
-    resetAutoHide,
+    resetAutoHide: scheduleAutoHide,
   };
 }

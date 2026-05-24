@@ -33,14 +33,32 @@ export function ClipboardBubble({ copyEvent, settings, onExpand }: Props) {
       : "Copied sensitive text"
     : copyEvent?.preview;
 
+  const handleClick = () => {
+    onExpand();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onExpand();
+    }
+  };
+
   return (
-    <div className="bubble" onClick={onExpand}>
+    <div
+      className="bubble"
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+    >
       <div className="bubble-row">
         {settings.showMascot && (
           <img
             className={`mascot-img mascot-bubble ${copyEvent ? "mascot-pop" : ""}`}
             src={mascotAssets[state]}
             alt={state}
+            draggable={false}
           />
         )}
         <div className="bubble-body">
@@ -54,7 +72,7 @@ export function ClipboardBubble({ copyEvent, settings, onExpand }: Props) {
           </div>
           {preview && <div className="bubble-preview">{preview}</div>}
           <div className="bubble-subtitle">{subtitle}</div>
-          <div className="bubble-hint">Click to view history</div>
+          <div className="bubble-hint">Click anywhere to view history</div>
         </div>
       </div>
     </div>

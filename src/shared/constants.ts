@@ -7,7 +7,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   paused: false,
   launchAtStartup: false,
   historyLimit: 10,
-  autoHideDelayMs: 2000,
+  autoHideDelayMs: 4000,
   maxStoredTextLength: 5000,
   enableHistoryPersistence: true,
   ignorePatterns: "",
