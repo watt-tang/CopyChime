@@ -9,9 +9,10 @@ interface Props {
   onCopy: (id: string) => void;
   onTogglePin: (id: string) => void;
   onDelete: (id: string) => void;
+  onAddFavorite: (id: string) => void;
 }
 
-export function HistoryItem({ item, settings, onCopy, onTogglePin, onDelete }: Props) {
+export function HistoryItem({ item, settings, onCopy, onTogglePin, onDelete, onAddFavorite }: Props) {
   const [copied, setCopied] = useState(false);
 
   const preview = item.hiddenReason
@@ -54,6 +55,13 @@ export function HistoryItem({ item, settings, onCopy, onTogglePin, onDelete }: P
           onClick={() => onTogglePin(item.id)}
         >
           📌
+        </button>
+        <button
+          className="icon-btn"
+          title="Add to favorites"
+          onClick={() => onAddFavorite(item.id)}
+        >
+          ☆
         </button>
         <button className="icon-btn danger" title="Delete" onClick={() => onDelete(item.id)}>
           ✕

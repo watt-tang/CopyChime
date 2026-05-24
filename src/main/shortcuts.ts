@@ -5,6 +5,7 @@ type ShortcutCallbacks = {
   togglePause: () => void;
   showHistory: () => void;
   togglePrivacy: () => void;
+  openQuickPaste: () => void;
 };
 
 const SHORTCUTS = {
@@ -12,6 +13,7 @@ const SHORTCUTS = {
   "CommandOrControl+Alt+P": "togglePause",
   "CommandOrControl+Alt+H": "showHistory",
   "CommandOrControl+Alt+M": "togglePrivacy",
+  "CommandOrControl+Alt+V": "openQuickPaste",
 } as const;
 
 export function registerShortcuts(cb: ShortcutCallbacks): void {

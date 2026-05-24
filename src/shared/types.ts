@@ -9,7 +9,7 @@ export type ThemeName =
 
 export type SoundFeedback = "off" | "chime" | "meow";
 
-export type ViewMode = "bubble" | "history" | "settings";
+export type ViewMode = "bubble" | "history" | "settings" | "quickPaste" | "favorites";
 
 export type WindowMode = "bubble" | "panel";
 
@@ -50,6 +50,51 @@ export interface CopyEventView {
   savedToHistory: boolean;
 }
 
+export interface FavoriteClip {
+  id: string;
+  text: string;
+  title: string;
+  createdAt: number;
+  updatedAt: number;
+  charCount: number;
+  lineCount: number;
+}
+
+export interface FavoriteClipView {
+  id: string;
+  title: string;
+  preview: string;
+  createdAt: number;
+  updatedAt: number;
+  charCount: number;
+  lineCount: number;
+}
+
+export interface AppExclusionRule {
+  id: string;
+  enabled: boolean;
+  processName: string;
+  windowTitlePattern?: string;
+  note?: string;
+}
+
+export interface ActiveWindowInfo {
+  processName: string;
+  title: string;
+}
+
+export interface QuickPasteItem {
+  source: "history" | "favorite";
+  id: string;
+  index: number;
+  title: string;
+  preview: string;
+  charCount: number;
+  lineCount: number;
+  pinned: boolean;
+  hiddenReason?: HiddenReason;
+}
+
 export interface AppSettings {
   theme: ThemeName;
   privacyMode: boolean;
@@ -65,6 +110,11 @@ export interface AppSettings {
   showMascot: boolean;
   soundFeedback: SoundFeedback;
   soundVolume: number;
+  quickPasteLimit: number;
+  quickPasteAutoPaste: boolean;
+  quickPasteSearchFavorites: boolean;
+  pastePlainTextByDefault: boolean;
+  appExclusionRules: AppExclusionRule[];
   windowBounds?: {
     x: number;
     y: number;
@@ -76,6 +126,7 @@ export interface AppSettings {
 export interface AppState {
   settings: AppSettings;
   history: HistoryItemView[];
+  favorites: FavoriteClipView[];
   paused: boolean;
   privacyMode: boolean;
 }
@@ -96,4 +147,18 @@ export interface CopyChimeAPI {
   onHistoryUpdated(callback: (history: HistoryItemView[]) => void): () => void;
   onSettingsUpdated(callback: (settings: AppSettings) => void): () => void;
   onViewChanged(callback: (view: ViewMode) => void): () => void;
+  // Quick Paste
+  quickPasteGetItems(): Promise<QuickPasteItem[]>;
+  quickPasteChoose(source: string, id: string, action: "copy" | "paste"): Promise<boolean>;
+  // Favorites
+  getFavorites(): Promise<FavoriteClipView[]>;
+  addFavoriteFromHistory(historyId: string): Promise<boolean>;
+  addFavoriteText(text: string, title?: string): Promise<boolean>;
+  updateFavoriteTitle(id: string, title: string): Promise<boolean>;
+  deleteFavorite(id: string): Promise<boolean>;
+  copyFavorite(id: string): Promise<boolean>;
+  pasteFavorite(id: string): Promise<boolean>;
+  isFavorite(text: string): Promise<boolean>;
+  // Events
+  onFavoritesUpdated(callback: (favorites: FavoriteClipView[]) => void): () => void;
 }

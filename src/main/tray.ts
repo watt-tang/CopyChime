@@ -1,6 +1,7 @@
-import { Tray, Menu, nativeImage, app } from "electron";
+import { Tray, Menu, app } from "electron";
 import { createTrayIcon } from "./trayIcon";
 import { AppSettings } from "../shared/types";
+import { DEFAULT_SETTINGS } from "../shared/constants";
 
 let tray: Tray | null = null;
 
@@ -30,22 +31,7 @@ export function createTray(cb: TrayMenuCallbacks): void {
 }
 
 function getDefaultSettings(): AppSettings {
-  return {
-    theme: "system",
-    privacyMode: false,
-    saveHistoryInPrivacyMode: false,
-    paused: false,
-    launchAtStartup: false,
-    historyLimit: 10,
-    autoHideDelayMs: 2000,
-    maxStoredTextLength: 5000,
-    enableHistoryPersistence: true,
-    ignorePatterns: "",
-    maskSensitiveContent: true,
-    showMascot: true,
-    soundFeedback: "chime",
-    soundVolume: 0.35,
-  };
+  return { ...DEFAULT_SETTINGS };
 }
 
 export function updateTrayMenu(settings: AppSettings): void {

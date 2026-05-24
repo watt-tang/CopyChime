@@ -131,3 +131,9 @@ export function togglePin(id: string): boolean {
   setHistory(history);
   return true;
 }
+
+export function getTextById(id: string): string | null {
+  const history = getHistory();
+  const item = history.find((h) => h.id === id);
+  return item?.text ?? null;
+}

@@ -2,6 +2,8 @@ import { useCopyChime } from "./hooks/useCopyChime";
 import { ClipboardBubble } from "./components/ClipboardBubble";
 import { HistoryPanel } from "./components/HistoryPanel";
 import { SettingsPanel } from "./components/SettingsPanel";
+import { QuickPastePanel } from "./components/QuickPastePanel";
+import { FavoritesPanel } from "./components/FavoritesPanel";
 import { applyTheme } from "./utils/theme";
 import { useEffect } from "react";
 
@@ -13,6 +15,8 @@ export default function App() {
     latestCopy,
     expandToHistory,
     expandToSettings,
+    expandToFavorites,
+    expandToQuickPaste,
     backToBubble,
   } = useCopyChime();
 
@@ -40,6 +44,10 @@ export default function App() {
     window.copyChime.deleteHistoryItem(id);
   };
 
+  const handleAddFavorite = (id: string) => {
+    window.copyChime.addFavoriteFromHistory(id);
+  };
+
   const handleClearUnpinned = () => {
     window.copyChime.clearUnpinnedHistory();
   };
@@ -47,6 +55,20 @@ export default function App() {
   const handleUpdateSettings = (patch: Record<string, unknown>) => {
     window.copyChime.updateSettings(patch as never);
   };
+
+  if (currentView === "quickPaste") {
+    return <QuickPastePanel settings={settings} onClose={backToBubble} />;
+  }
+
+  if (currentView === "favorites") {
+    return (
+      <FavoritesPanel
+        settings={settings}
+        onBack={backToBubble}
+        onOpenSettings={expandToSettings}
+      />
+    );
+  }
 
   if (currentView === "settings") {
     return (
@@ -67,8 +89,10 @@ export default function App() {
         onCopy={handleCopy}
         onTogglePin={handleTogglePin}
         onDelete={handleDelete}
+        onAddFavorite={handleAddFavorite}
         onClearUnpinned={handleClearUnpinned}
         onOpenSettings={expandToSettings}
+        onOpenFavorites={expandToFavorites}
         onBack={backToBubble}
       />
     );

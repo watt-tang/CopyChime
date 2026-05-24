@@ -9,6 +9,7 @@ export function getClampedSettings(): AppSettings {
   s.autoHideDelayMs = clamp(s.autoHideDelayMs, LIMITS.autoHideDelayMs.min, LIMITS.autoHideDelayMs.max);
   s.maxStoredTextLength = clamp(s.maxStoredTextLength, LIMITS.maxStoredTextLength.min, LIMITS.maxStoredTextLength.max);
   s.soundVolume = clamp(s.soundVolume, LIMITS.soundVolume.min, LIMITS.soundVolume.max);
+  s.quickPasteLimit = clamp(s.quickPasteLimit, LIMITS.quickPasteLimit.min, LIMITS.quickPasteLimit.max);
   return s;
 }
 
@@ -19,6 +20,7 @@ export function updateSettings(patch: Partial<AppSettings>): AppSettings {
   merged.autoHideDelayMs = clamp(merged.autoHideDelayMs, LIMITS.autoHideDelayMs.min, LIMITS.autoHideDelayMs.max);
   merged.maxStoredTextLength = clamp(merged.maxStoredTextLength, LIMITS.maxStoredTextLength.min, LIMITS.maxStoredTextLength.max);
   merged.soundVolume = clamp(merged.soundVolume, LIMITS.soundVolume.min, LIMITS.soundVolume.max);
+  merged.quickPasteLimit = clamp(merged.quickPasteLimit, LIMITS.quickPasteLimit.min, LIMITS.quickPasteLimit.max);
   return setSettings(merged);
 }
 

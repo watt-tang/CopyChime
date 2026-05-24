@@ -73,6 +73,20 @@ export function useCopyChime() {
     window.copyChime.setView("settings");
   }, [clearAutoHideTimer]);
 
+  const expandToFavorites = useCallback(() => {
+    clearAutoHideTimer();
+    setCurrentView("favorites");
+    window.copyChime.setWindowMode("panel");
+    window.copyChime.setView("favorites");
+  }, [clearAutoHideTimer]);
+
+  const expandToQuickPaste = useCallback(() => {
+    clearAutoHideTimer();
+    setCurrentView("quickPaste");
+    window.copyChime.setWindowMode("panel");
+    window.copyChime.setView("quickPaste");
+  }, [clearAutoHideTimer]);
+
   const backToBubble = useCallback(() => {
     setCurrentView("bubble");
     window.copyChime.setWindowMode("bubble");
@@ -88,6 +102,8 @@ export function useCopyChime() {
     latestCopy,
     expandToHistory,
     expandToSettings,
+    expandToFavorites,
+    expandToQuickPaste,
     backToBubble,
     resetAutoHide: scheduleAutoHide,
   };

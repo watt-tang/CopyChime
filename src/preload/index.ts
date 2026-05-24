@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { CopyChimeAPI, CopyEventView, HistoryItemView, AppSettings, ViewMode, WindowMode, AppState } from "../shared/types";
+import { CopyChimeAPI, CopyEventView, HistoryItemView, FavoriteClipView, QuickPasteItem, AppSettings, ViewMode, WindowMode, AppState } from "../shared/types";
 
 const copyChime: CopyChimeAPI = {
   getState: () => ipcRenderer.invoke("app:get-state") as Promise<AppState>,
@@ -32,6 +32,32 @@ const copyChime: CopyChimeAPI = {
     const handler = (_e: unknown, view: ViewMode) => callback(view);
     ipcRenderer.on("view:changed", handler);
     return () => ipcRenderer.removeListener("view:changed", handler);
+  },
+  // Quick Paste
+  quickPasteGetItems: () => ipcRenderer.invoke("quick-paste:get-items") as Promise<QuickPasteItem[]>,
+  quickPasteChoose: (source: string, id: string, action: "copy" | "paste") =>
+    ipcRenderer.invoke("quick-paste:choose", source, id, action) as Promise<boolean>,
+  // Favorites
+  getFavorites: () => ipcRenderer.invoke("favorites:get") as Promise<FavoriteClipView[]>,
+  addFavoriteFromHistory: (historyId: string) =>
+    ipcRenderer.invoke("favorites:add-from-history", historyId) as Promise<boolean>,
+  addFavoriteText: (text: string, title?: string) =>
+    ipcRenderer.invoke("favorites:add-text", text, title) as Promise<boolean>,
+  updateFavoriteTitle: (id: string, title: string) =>
+    ipcRenderer.invoke("favorites:update-title", id, title) as Promise<boolean>,
+  deleteFavorite: (id: string) =>
+    ipcRenderer.invoke("favorites:delete", id) as Promise<boolean>,
+  copyFavorite: (id: string) =>
+    ipcRenderer.invoke("favorites:copy", id) as Promise<boolean>,
+  pasteFavorite: (id: string) =>
+    ipcRenderer.invoke("favorites:paste", id) as Promise<boolean>,
+  isFavorite: (text: string) =>
+    ipcRenderer.invoke("favorites:is-favorite", text) as Promise<boolean>,
+  // Events
+  onFavoritesUpdated: (callback: (favorites: FavoriteClipView[]) => void) => {
+    const handler = (_e: unknown, favorites: FavoriteClipView[]) => callback(favorites);
+    ipcRenderer.on("favorites:updated", handler);
+    return () => ipcRenderer.removeListener("favorites:updated", handler);
   },
 };
 

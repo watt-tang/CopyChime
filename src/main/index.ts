@@ -6,13 +6,28 @@ import * as historyManager from "./historyManager";
 import * as settingsManager from "./settingsManager";
 import * as trayManager from "./tray";
 import * as shortcutsManager from "./shortcuts";
+import * as appExclusions from "./appExclusions";
+import * as activeWindow from "./activeWindow";
 import { CopyEventView } from "../shared/types";
 
 let isQuitting = false;
 
-function handleCopyText(text: string): void {
+async function handleCopyText(text: string): Promise<void> {
   const settings = settingsManager.getClampedSettings();
   if (settings.paused) return;
+
+  // App exclusion check
+  if (settings.appExclusionRules.length > 0) {
+    try {
+      const winInfo = await activeWindow.getActiveWindow();
+      if (winInfo && appExclusions.matchAppExclusion(winInfo, settings.appExclusionRules)) {
+        console.debug("Clipboard skipped due to app exclusion:", winInfo.processName);
+        return;
+      }
+    } catch (err) {
+      console.warn("Active window detection failed:", err);
+    }
+  }
 
   const result = historyManager.addText(text, settings);
   if (!result) return;
@@ -98,12 +113,17 @@ app.whenReady().then(() => {
       settingsManager.updateSettings({ privacyMode: !s.privacyMode });
       trayManager.updateTrayMenu(settingsManager.getClampedSettings());
     },
+    openQuickPaste: () => {
+      showPanel();
+      const win = getMainWindow();
+      if (win) win.webContents.send("view:changed", "quickPaste");
+    },
   });
 
   // Start clipboard watching
   const settings = settingsManager.getClampedSettings();
   clipboardWatcher.setPaused(settings.paused);
-  clipboardWatcher.start(handleCopyText);
+  clipboardWatcher.start((text) => { handleCopyText(text); });
 
   // Apply launch at startup
   settingsManager.applyLaunchAtStartup(settings.launchAtStartup);
